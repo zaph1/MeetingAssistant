@@ -1,0 +1,23 @@
+services:
+  whisperx-api:
+    build: .
+    ports:
+      - "8001:8001"
+    environment:
+      # Optional: for diarization (pyannote) access
+      # HF_TOKEN: "your_hf_token_here"
+      WHISPERX_MODEL: "base"
+      WHISPERX_DEVICE: "cuda"
+      WHISPERX_COMPUTE_TYPE: "float16"
+    gpus: all
+
+  web-ui:
+    build: 
+      context: ../164
+    ports:
+      - "8000:8000"
+    environment:
+      - WHISPERX_API_URL=http://whisperx-api:8001/transcribe
+      - LANGFLOW_URL=http://host.docker.internal:7860
+    depends_on:
+      - whisperx-api

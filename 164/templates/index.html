@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enterprise Workflow Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette */
+      --background: #FAFAF8;
+      --foreground: #1A1A1A;
+      --muted: #F5F3F0;
+      --muted-foreground: #6B6B6B;
+      --accent: #B8860B;
+      --accent-secondary: #D4A84B;
+      --border: #E8E4DF;
+      --card: #FFFFFF;
+      --ring: #B8860B;
+      
+      /* Typography */
+      --font-heading: 'Playfair Display', Georgia, serif;
+      --font-body: 'Source Sans 3', system-ui, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    body {
+      font-family: var(--font-body);
+      margin: 0;
+      color: var(--foreground);
+      background-color: var(--background);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 64px 24px;
+      line-height: 1.75;
+      letter-spacing: 0.01em;
+    }
+
+    .header-bar {
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-logo {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--foreground);
+      letter-spacing: -0.01em;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--accent);
+      border-radius: 8px;
+      padding: 48px;
+      box-shadow: 0 4px 12px rgba(26, 26, 26, 0.06);
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      margin: 0 0 12px 0;
+      font-size: 36px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: var(--foreground);
+    }
+
+    .hint {
+      margin: 0 0 32px 0;
+      color: var(--muted-foreground);
+      font-size: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+
+    input[type="email"],
+    input[type="file"] {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      font-size: 16px;
+      color: var(--foreground);
+      box-sizing: border-box;
+      transition: all 150ms ease-out;
+      font-family: var(--font-body);
+    }
+
+    input[type="email"]::placeholder {
+      color: rgba(107, 107, 107, 0.6);
+    }
+
+    input[type="email"]:hover,
+    input[type="file"]:hover {
+      border-color: rgba(184, 134, 11, 0.5); /* Hover accent shift */
+    }
+
+    input[type="email"]:focus,
+    input[type="file"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--accent);
+    }
+
+    input[type="file"]::file-selector-button {
+      margin-right: 16px;
+      padding: 8px 16px;
+      border-radius: 4px;
+      border: 1px solid var(--foreground);
+      background: transparent;
+      color: var(--foreground);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+      font-family: var(--font-body);
+    }
+
+    input[type="file"]::file-selector-button:hover {
+      background: var(--muted);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 32px 0;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .divider::before {
+      margin-right: 16px;
+    }
+
+    .divider::after {
+      margin-left: 16px;
+    }
+
+    .row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: 500;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+      font-family: var(--font-body);
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 1px 2px rgba(26, 26, 26, 0.04);
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--accent-secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(184, 134, 11, 0.2);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--foreground);
+      border: 1px solid var(--foreground);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background-color: var(--muted);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-danger {
+      border-color: #A33A3A;
+      color: #A33A3A;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background-color: #FDF7F7;
+      border-color: #8C2F2F;
+      color: #8C2F2F;
+    }
+
+    .action-panel {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+
+    .status-panel {
+      margin-top: 32px;
+      border-radius: 6px;
+      background: var(--background);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .status-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-mono);
+      color: var(--foreground);
+      background: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .status-body {
+      padding: 20px;
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--background);
+      background: var(--foreground);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      min-height: 100px;
+      max-height: 300px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--border);
+      color: var(--foreground);
+      letter-spacing: 0.05em;
+    }
+
+    .status-badge.running {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .status-badge.success {
+      background: #2E5C46;
+      color: #fff;
+    }
+
+    .status-badge.error {
+      background: #A33A3A;
+      color: #fff;
+    }
+
+    audio {
+      margin-top: 24px;
+      width: 100%;
+      height: 44px;
+    }
+
+    @media (max-width: 768px) {
+      .row {
+        flex-direction: column;
+      }
+      .card {
+        padding: 32px 20px;
+      }
+      body {
+        padding: 32px 16px;
+      }
+      h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header-bar">
+    <div class="brand-logo">Enterprise Portal</div>
+  </div>
+  <div class="wrap">
+    <div class="card">
+      <h1>Workflow Processing</h1>
+      <p class="hint">Upload media or record voice to initiate the automated processing workflow.</p>
+
+      <div class="form-group">
+        <label for="toEmail">Recipient Email Address</label>
+        <input id="toEmail" type="email" placeholder="user@company.com" />
+      </div>
+
+      <div class="form-group">
+        <label for="fileInput">Media Upload</label>
+        <input id="fileInput" type="file" accept=".mp4,.mp3,.wav,.m4a,.aac,.ogg,.webm,.opus,video/mp4,audio/*" />
+      </div>
+
+      <div class="divider">Or Record Meeting / Audio</div>
+
+      <div class="form-group">
+        <div class="row" style="margin-bottom: 16px;">
+          <button id="startRecordBtn" type="button" class="btn btn-secondary">Record Voice</button>
+          <button id="recordMeetingBtn" type="button" class="btn btn-secondary">Record Meeting</button>
+        </div>
+        <div class="row">
+          <button id="stopRecordBtn" type="button" class="btn btn-secondary" disabled>Stop</button>
+          <button id="clearRecordBtn" type="button" class="btn btn-secondary btn-danger" disabled>Clear</button>
+        </div>
+        <audio id="recordedAudio" controls hidden></audio>
+      </div>
+
+      <div class="action-panel row">
+        <button id="transcribeBtn" type="button" class="btn btn-secondary">Transcribe Audio Only</button>
+        <button id="uploadBtn" type="button" class="btn btn-primary">Submit and Run Workflow</button>
+      </div>
+
+      <div class="status-panel">
+        <div class="status-header">
+          <span>Execution Log</span>
+          <span id="statusBadge" class="status-badge">Idle</span>
+        </div>
+        <div id="result" class="status-body">System ready. Waiting for user input...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById("uploadBtn");
+    const transcribeBtn = document.getElementById("transcribeBtn");
+    const startRecordBtn = document.getElementById("startRecordBtn");
+    const recordMeetingBtn = document.getElementById("recordMeetingBtn");
+    const stopRecordBtn = document.getElementById("stopRecordBtn");
+    const clearRecordBtn = document.getElementById("clearRecordBtn");
+    const fileInput = document.getElementById("fileInput");
+    const recordedAudio = document.getElementById("recordedAudio");
+    const statusBadge = document.getElementById("statusBadge");
+    const resultEl = document.getElementById("result");
+
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let recordedFile = null;
+    let activeStreams = [];
+    let recordedAudioUrl = null;
+
+    const mimeToExtension = {
+      "audio/webm": "webm",
+      "audio/ogg": "ogg",
+      "audio/mp4": "m4a",
+      "audio/opus": "opus"
+    };
+
+    function setStatus(text, type = "default") {
+      statusBadge.textContent = text;
+      statusBadge.className = `status-badge ${type === "default" ? "" : type}`;
+    }
+
+    function appendLog(text) {
+      if (resultEl.textContent === "System ready. Waiting for user input...") {
+        resultEl.textContent = text;
+      } else {
+        resultEl.textContent += "\n" + text;
+      }
+      resultEl.scrollTop = resultEl.scrollHeight;
+    }
+
+    function pickRecorderMimeType() {
+      const preferred = [
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/ogg;codecs=opus",
+        "audio/ogg",
+        "audio/mp4"
+      ];
+
+      if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) {
+        return "";
+      }
+
+      return preferred.find((type) => MediaRecorder.isTypeSupported(type)) || "";
+    }
+
+    function clearRecordedAudio() {
+      recordedFile = null;
+      recordedChunks = [];
+      if (recordedAudioUrl) {
+        URL.revokeObjectURL(recordedAudioUrl);
+        recordedAudioUrl = null;
+      }
+      recordedAudio.removeAttribute("src");
+      recordedAudio.hidden = true;
+      clearRecordBtn.disabled = true;
+    }
+
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files[0]) {
+        setStatus("File Selected", "success");
+        appendLog(`[INFO] Selected file: ${fileInput.files[0].name}`);
+      }
+    });
+
+    function startMediaRecording(stream, typeLabel) {
+      const mimeType = pickRecorderMimeType();
+      mediaRecorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
+
+      clearRecordedAudio();
+      recordedChunks = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const baseMimeType = (mediaRecorder.mimeType || "audio/webm").split(";")[0];
+        const blob = new Blob(recordedChunks, { type: baseMimeType });
+        const extension = mimeToExtension[baseMimeType] || "webm";
+        recordedFile = new File([blob], `${typeLabel}-recording.${extension}`, { type: baseMimeType });
+
+        recordedAudioUrl = URL.createObjectURL(blob);
+        recordedAudio.src = recordedAudioUrl;
+        recordedAudio.hidden = false;
+        clearRecordBtn.disabled = false;
+        setStatus("Recording Ready", "success");
+        appendLog(`[INFO] Recording complete: ${recordedFile.name}`);
+      };
+
+      mediaRecorder.start();
+      startRecordBtn.disabled = true;
+      recordMeetingBtn.disabled = true;
+      stopRecordBtn.disabled = false;
+      setStatus("Recording", "running");
+      appendLog(`[INFO] ${typeLabel} recording started. Click Stop when finished.`);
+    }
+
+    startRecordBtn.addEventListener("click", async () => {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+        setStatus("Error", "error");
+        appendLog("[ERROR] Voice recording is not supported in this browser.");
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        activeStreams.push(stream);
+        startMediaRecording(stream, "voice");
+      } catch (error) {
+        setStatus("Error", "error");
+        appendLog("[ERROR] Could not start voice recording. Check microphone permissions.");
+        console.error(error);
+      }
+    });
+
+    recordMeetingBtn.addEventListener("click", async () => {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        setStatus("Error", "error");
+        appendLog("[ERROR] Screen audio capture is not supported in this browser.");
+        return;
+      }
+      try {
+        const displayStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+        activeStreams.push(displayStream);
+        
+        let micStream = null;
+        try {
+          micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          activeStreams.push(micStream);
+        } catch(e) {
+          appendLog("[WARNING] Could not get microphone access. Recording system audio only.");
+        }
+
+        const audioContext = new window.AudioContext();
+        const dest = audioContext.createMediaStreamDestination();
+        
+        const displayAudioTracks = displayStream.getAudioTracks();
+        if (displayAudioTracks.length > 0) {
+          const displaySource = audioContext.createMediaStreamSource(new MediaStream([displayAudioTracks[0]]));
+          displaySource.connect(dest);
+        } else {
+          appendLog("[WARNING] No system audio track found in display media.");
+        }
+
+        if (micStream && micStream.getAudioTracks().length > 0) {
+          const micSource = audioContext.createMediaStreamSource(micStream);
+          micSource.connect(dest);
+        }
+
+        startMediaRecording(dest.stream, "meeting");
+
+        const videoTracks = displayStream.getVideoTracks();
+        if (videoTracks.length > 0) {
+          videoTracks[0].onended = () => {
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+              stopRecordBtn.click();
+            }
+          };
+        }
+      } catch (error) {
+        setStatus("Error", "error");
+        appendLog("[ERROR] Could not start meeting recording. Make sure to share system audio.");
+        console.error(error);
+      }
+    });
+
+    stopRecordBtn.addEventListener("click", () => {
+      if (!mediaRecorder || mediaRecorder.state === "inactive") {
+        return;
+      }
+
+      mediaRecorder.stop();
+      activeStreams.forEach(stream => {
+        stream.getTracks().forEach((track) => track.stop());
+      });
+      activeStreams = [];
+      startRecordBtn.disabled = false;
+      recordMeetingBtn.disabled = false;
+      stopRecordBtn.disabled = true;
+    });
+
+    clearRecordBtn.addEventListener("click", () => {
+      clearRecordedAudio();
+      setStatus("Cleared", "default");
+      appendLog("[INFO] Recording cleared.");
+    });
+
+    transcribeBtn.addEventListener("click", async () => {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        setStatus("Warning", "error");
+        appendLog("[WARNING] Stop recording before submitting.");
+        return;
+      }
+
+      const file = recordedFile || fileInput.files[0];
+      if (!file) {
+        setStatus("Validation Error", "error");
+        appendLog("[ERROR] Please upload a supported media file or record audio.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      transcribeBtn.disabled = true;
+      btn.disabled = true;
+      setStatus("Transcribing", "running");
+      appendLog(`[INFO] Sending ${file.name} for transcription...`);
+
+      try {
+        const response = await fetch("/transcribe-meeting", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Transcription request failed");
+        }
+
+        setStatus("Completed", "success");
+        appendLog(`[SUCCESS] Transcription complete.`);
+        if (data.text) {
+          appendLog(`[TRANSCRIPT]\n${data.text}`);
+        } else if (data.raw_text) {
+          appendLog(`[TRANSCRIPT]\n${data.raw_text}`);
+        }
+      } catch (error) {
+        setStatus("Failed", "error");
+        appendLog(`[ERROR] Transcription failed: ${error.message}`);
+        console.error(error);
+      } finally {
+        transcribeBtn.disabled = false;
+        btn.disabled = false;
+      }
+    });
+
+    btn.addEventListener("click", async () => {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        setStatus("Warning", "error");
+        appendLog("[WARNING] Stop recording before submitting.");
+        return;
+      }
+
+      const file = recordedFile || fileInput.files[0];
+      const toEmail = document.getElementById("toEmail").value.trim();
+
+      if (!toEmail) {
+        setStatus("Validation Error", "error");
+        appendLog("[ERROR] Please enter a recipient email address.");
+        return;
+      }
+
+      if (!file) {
+        setStatus("Validation Error", "error");
+        appendLog("[ERROR] Please upload a supported media file or record audio.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("to_email", toEmail);
+
+      transcribeBtn.disabled = true;
+      btn.disabled = true;
+      setStatus("Processing", "running");
+      appendLog(`[INFO] Initiating workflow for ${file.name}...`);
+      appendLog(`[INFO] Recipient: ${toEmail}`);
+
+      try {
+        const response = await fetch("/upload-and-run", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Request failed");
+        }
+
+        setStatus("Completed", "success");
+        appendLog(`[SUCCESS] File successfully processed.`);
+        appendLog(`[OUTPUT] path: ${data.file_path}`);
+        if (data.result_text) {
+          appendLog(`[RESULT]\n${data.result_text}`);
+        }
+      } catch (error) {
+        setStatus("Failed", "error");
+        appendLog(`[ERROR] Workflow failed: ${error.message}`);
+        console.error(error);
+      } finally {
+        transcribeBtn.disabled = false;
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>
